@@ -42,26 +42,4 @@ public class ProductModel {
     @Enumerated(EnumType.STRING)
     private StatusModel status;
 
-    public static ProductModel toModel(Product product) {
-        ProductModel productModel = new ProductModel();
-        productModel.setId(product.getId());
-        productModel.setName(product.getName());
-        productModel.setPrice(product.getPrice());
-        productModel.setDescription(product.getDescription());
-        productModel.setTags(product.getTags().stream().map(tag -> TagModel.valueOf(tag.name())).collect(Collectors.toList()));
-        productModel.setStatus(StatusModel.valueOf(product.getStatus().name()));
-        return productModel;
-    }
-
-    public Product toEntity() {
-        return Product.builder()
-                .id(this.id)
-                .description(this.description)
-                .status(Status.valueOf(this.status.name()))
-                .price(this.price)
-                .tags(this.tags.stream().map(tag -> Tag.valueOf(tag.name())).collect(Collectors.toList()))
-                .name(this.name)
-                .build();
-    }
-
 }

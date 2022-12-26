@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/products")
@@ -21,8 +24,14 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody CreateProductDTO createProductDTO) {
         Long savedId = createProduct.invoke(createProductDTO.toEntity());
-        log.info("{}", savedId);
-        return ResponseEntity.status(201).build();
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedId)
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
 }
