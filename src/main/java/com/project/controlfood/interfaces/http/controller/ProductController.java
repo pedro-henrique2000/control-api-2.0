@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -22,7 +23,7 @@ public class ProductController {
     private final CreateProduct createProduct;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody CreateProductDTO createProductDTO) {
+    public ResponseEntity<Void> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
         Long savedId = createProduct.invoke(createProductDTO.toEntity());
 
         URI location = ServletUriComponentsBuilder

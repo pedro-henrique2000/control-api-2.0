@@ -7,6 +7,9 @@ import com.project.controlfood.domain.entity.Tag;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,10 +17,19 @@ import java.util.stream.Collectors;
 @Setter
 public class CreateProductDTO {
 
+    @NotBlank
     private String name;
+
+    @NotEmpty
     private String description;
+
+    @Positive
     private double price;
+
+    @NotEmpty
     private List<String> tags;
+
+    @NotBlank
     private String status;
 
     public Product toEntity() {
