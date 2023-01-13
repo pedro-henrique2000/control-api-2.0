@@ -1,0 +1,42 @@
+package com.project.controlfood.interfaces.http.dto;
+
+
+import com.project.controlfood.domain.entity.Product;
+import com.project.controlfood.domain.entity.Status;
+import com.project.controlfood.domain.entity.Tag;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+@Setter
+public class UpdateProductDTO {
+
+    @Size(max = 50)
+    private String name;
+
+    @Size(max = 255)
+    private String description;
+
+    @Positive
+    private Double price;
+
+    private List<@NotNull TagDTO> tags;
+
+    @NotNull
+    private StatusDTO status;
+
+    public Product toEntity() {
+        return Product.builder()
+                .description(this.description)
+                .status(Status.valueOf(this.status.name()))
+                .price(this.price)
+                .tags(this.tags.stream().map(tag -> Tag.valueOf(tag.name())).collect(Collectors.toList()))
+                .name(this.name)
+                .build();
+    }
+
+}

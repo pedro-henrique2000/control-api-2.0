@@ -1,13 +1,11 @@
 package com.project.controlfood.interfaces.http.controller;
 
-import com.project.controlfood.application.product.CreateProduct;
-import com.project.controlfood.application.product.DeleteProduct;
-import com.project.controlfood.application.product.FindProductById;
-import com.project.controlfood.application.product.FindProducts;
+import com.project.controlfood.application.product.*;
 import com.project.controlfood.domain.entity.Product;
 import com.project.controlfood.domain.entity.ProductPage;
 import com.project.controlfood.interfaces.http.dto.CreateProductDTO;
 import com.project.controlfood.interfaces.http.dto.ProductDTO;
+import com.project.controlfood.interfaces.http.dto.UpdateProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +27,7 @@ public class ProductController {
     private final CreateProduct createProduct;
     private final FindProducts findProducts;
     private final DeleteProduct deleteProduct;
+    private final UpdateProduct updateProduct;
 
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
@@ -67,6 +66,15 @@ public class ProductController {
             @PathVariable Long id
     ) {
         deleteProduct.invoke(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(
+            @Valid @RequestBody UpdateProductDTO updateProductDTO,
+            @PathVariable Long id
+            ) {
+        updateProduct.invoke(id, updateProductDTO.toEntity());
         return ResponseEntity.noContent().build();
     }
 

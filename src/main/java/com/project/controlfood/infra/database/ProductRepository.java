@@ -3,10 +3,7 @@ package com.project.controlfood.infra.database;
 import com.project.controlfood.domain.entity.Product;
 import com.project.controlfood.domain.entity.ProductPage;
 import com.project.controlfood.domain.exception.InternalErrorException;
-import com.project.controlfood.domain.ports.ICreateProductRepository;
-import com.project.controlfood.domain.ports.IDeleteProductRepository;
-import com.project.controlfood.domain.ports.IFindProductByIdRepository;
-import com.project.controlfood.domain.ports.IFindProductRepository;
+import com.project.controlfood.domain.ports.*;
 import com.project.controlfood.infra.database.jpa.ProductRepositoryJPA;
 import com.project.controlfood.infra.database.mapper.ProductModelMapper;
 import com.project.controlfood.infra.database.model.ProductModel;
@@ -26,7 +23,8 @@ public class ProductRepository implements
         ICreateProductRepository,
         IFindProductRepository,
         IFindProductByIdRepository,
-        IDeleteProductRepository {
+        IDeleteProductRepository,
+        IUpdateProductRepository {
 
     private final ProductRepositoryJPA productRepositoryJPA;
     private final ProductModelMapper productModelMapper;
@@ -76,6 +74,15 @@ public class ProductRepository implements
             productRepositoryJPA.delete(productModelMapper.toModel(product));
         } catch (Exception exception) {
             throw new InternalErrorException("error occurred while deleting product with id " + product.getId());
+        }
+    }
+
+    @Override
+    public Product update(Product product) {
+        try {
+            return this.create(product);
+        } catch (Exception exception) {
+            throw new InternalErrorException("error occurred while updating product with id " + product.getId());
         }
     }
 }
