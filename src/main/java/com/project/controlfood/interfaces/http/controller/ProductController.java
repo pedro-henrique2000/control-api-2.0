@@ -1,7 +1,10 @@
 package com.project.controlfood.interfaces.http.controller;
 
 import com.project.controlfood.application.product.CreateProduct;
+import com.project.controlfood.application.product.DeleteProduct;
+import com.project.controlfood.application.product.FindProductById;
 import com.project.controlfood.application.product.FindProducts;
+import com.project.controlfood.domain.entity.Product;
 import com.project.controlfood.domain.entity.ProductPage;
 import com.project.controlfood.interfaces.http.dto.CreateProductDTO;
 import com.project.controlfood.interfaces.http.dto.ProductDTO;
@@ -22,8 +25,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProductController {
 
+    private final FindProductById findProductById;
     private final CreateProduct createProduct;
     private final FindProducts findProducts;
+    private final DeleteProduct deleteProduct;
 
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
@@ -38,7 +43,7 @@ public class ProductController {
         return ResponseEntity.created(location).build();
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ProductDTO>> findProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "5") int limit
@@ -47,6 +52,22 @@ public class ProductController {
         log.info("Page: {} Total: {}", productPage.getPage(), productPage.getTotal());
         List<ProductDTO> productDTOList = productPage.getProducts().stream().map(ProductDTO::from).collect(Collectors.toList());
         return ResponseEntity.ok(productDTOList);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> findById(
+            @PathVariable Long id
+    ) {
+        Product product = findProductById.invoke(id);
+        return ResponseEntity.ok(ProductDTO.from(product));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(
+            @PathVariable Long id
+    ) {
+        deleteProduct.invoke(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

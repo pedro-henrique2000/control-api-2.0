@@ -4,6 +4,8 @@ import com.project.controlfood.domain.entity.Product;
 import com.project.controlfood.domain.entity.ProductPage;
 import com.project.controlfood.domain.exception.InternalErrorException;
 import com.project.controlfood.domain.ports.ICreateProductRepository;
+import com.project.controlfood.domain.ports.IDeleteProductRepository;
+import com.project.controlfood.domain.ports.IFindProductByIdRepository;
 import com.project.controlfood.domain.ports.IFindProductRepository;
 import com.project.controlfood.infra.database.jpa.ProductRepositoryJPA;
 import com.project.controlfood.infra.database.mapper.ProductModelMapper;
@@ -14,12 +16,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ProductRepository implements ICreateProductRepository, IFindProductRepository {
+public class ProductRepository implements
+        ICreateProductRepository,
+        IFindProductRepository,
+        IFindProductByIdRepository,
+        IDeleteProductRepository {
 
     private final ProductRepositoryJPA productRepositoryJPA;
     private final ProductModelMapper productModelMapper;
@@ -51,4 +58,24 @@ public class ProductRepository implements ICreateProductRepository, IFindProduct
         }
     }
 
+    @Override
+    public Product findById(Long id) {
+        try {
+            Optional<ProductModel> productModelOptional = this.productRepositoryJPA.findById(id);
+            if (productModelOptional.isEmpty())
+                return null;
+            return this.productModelMapper.toEntity(productModelOptional.get());
+        } catch (Exception exception) {
+            throw new InternalErrorException("error occurred while querying product with id " + id);
+        }
+    }
+
+    @Override
+    public void delete(Product product) {
+        try {
+            productRepositoryJPA.delete(productModelMapper.toModel(product));
+        } catch (Exception exception) {
+            throw new InternalErrorException("error occurred while deleting product with id " + product.getId());
+        }
+    }
 }

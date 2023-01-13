@@ -1,6 +1,7 @@
 package com.project.controlfood.interfaces.http.handler;
 
 import com.project.controlfood.domain.exception.InternalErrorException;
+import com.project.controlfood.domain.exception.NotFoundException;
 import com.project.controlfood.interfaces.http.dto.ExceptionDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +23,17 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionDetails> handleNotFoundException(final NotFoundException exception) {
+        ExceptionDetails validationExceptionDetails = new ExceptionDetails();
+        validationExceptionDetails.setMessage(exception.getMessage());
+        validationExceptionDetails.setStatus(HttpStatus.NOT_FOUND);
+        validationExceptionDetails.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(validationExceptionDetails, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InternalErrorException.class)
-    public ResponseEntity<ExceptionDetails> handleInternalErrorException(InternalErrorException exception) {
+    public ResponseEntity<ExceptionDetails> handleInternalErrorException(final InternalErrorException exception) {
         ExceptionDetails validationExceptionDetails = new ExceptionDetails();
         validationExceptionDetails.setMessage(exception.getMessage());
         validationExceptionDetails.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
