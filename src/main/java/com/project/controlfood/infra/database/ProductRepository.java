@@ -7,6 +7,7 @@ import com.project.controlfood.domain.ports.*;
 import com.project.controlfood.infra.database.jpa.ProductRepositoryJPA;
 import com.project.controlfood.infra.database.mapper.ProductModelMapper;
 import com.project.controlfood.infra.database.model.ProductModel;
+import com.project.controlfood.infra.database.model.StatusModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +45,7 @@ public class ProductRepository implements
     public ProductPage findProduct(int page, int limit) {
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, limit);
-            Page<ProductModel> pageResult = this.productRepositoryJPA.findAll(pageRequest);
+            Page<ProductModel> pageResult = this.productRepositoryJPA.findByStatus(StatusModel.ACTIVE, pageRequest);
             log.info("found {} products", pageResult.getNumberOfElements());
             return new ProductPage(
                     pageResult.getContent().stream().map(productModelMapper::toEntity).collect(Collectors.toList()),
