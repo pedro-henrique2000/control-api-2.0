@@ -45,7 +45,7 @@ public class ProductRepository implements
     public ProductPage findProduct(int page, int limit) {
         try {
             PageRequest pageRequest = PageRequest.of(page - 1, limit);
-            Page<ProductModel> pageResult = this.productRepositoryJPA.findByStatus(StatusModel.ACTIVE, pageRequest);
+            Page<ProductModel> pageResult = this.productRepositoryJPA.findAllActive(pageRequest);
             log.info("found {} products", pageResult.getNumberOfElements());
             return new ProductPage(
                     pageResult.getContent().stream().map(productModelMapper::toEntity).collect(Collectors.toList()),

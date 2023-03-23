@@ -21,6 +21,7 @@ public class ProductModelMapper {
         productModel.setDescription(product.getDescription());
         productModel.setTags(product.getTags().stream().map(tag -> TagModel.valueOf(tag.name())).collect(Collectors.toList()));
         productModel.setStatus(StatusModel.valueOf(product.getStatus().name()));
+        productModel.setAvailableQuantity(product.getAvailableQuantity());
         return productModel;
     }
 
@@ -32,6 +33,7 @@ public class ProductModelMapper {
                 .price(productModel.getPrice())
                 .tags(productModel.getTags().stream().map(tag -> Tag.valueOf(tag.name())).collect(Collectors.toList()))
                 .name(productModel.getName())
+                .availableQuantity(productModel.getAvailableQuantity())
                 .build();
     }
 

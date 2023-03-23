@@ -15,5 +15,6 @@ public class Product {
     private Double price;
     private List<Tag> tags;
     private Status status;
+    private int availableQuantity;
 
 }

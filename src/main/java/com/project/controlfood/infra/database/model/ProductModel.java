@@ -38,4 +38,6 @@ public class ProductModel {
     @Enumerated(EnumType.STRING)
     private StatusModel status;
 
+    private int availableQuantity;
+
 }

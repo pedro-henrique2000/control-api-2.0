@@ -28,6 +28,9 @@ public class CreateProductDTO {
 
     private List<@NotNull TagDTO> tags;
 
+    @Positive
+    private int availableQuantity;
+
     @NotNull
     private StatusDTO status;
 
@@ -38,6 +41,7 @@ public class CreateProductDTO {
                 .price(this.price)
                 .tags(this.tags.stream().map(tag -> Tag.valueOf(tag.name())).collect(Collectors.toList()))
                 .name(this.name)
+                .availableQuantity(this.availableQuantity)
                 .build();
     }
 
