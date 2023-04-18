@@ -3,11 +3,14 @@ package com.project.controlfood.interfaces.http.controller;
 import com.project.controlfood.application.product.*;
 import com.project.controlfood.domain.entity.Product;
 import com.project.controlfood.domain.entity.ProductPage;
+import com.project.controlfood.infra.database.jpa.ProductRepositoryJPA;
+import com.project.controlfood.infra.database.model.ProductModel;
 import com.project.controlfood.interfaces.http.dto.CreateProductDTO;
 import com.project.controlfood.interfaces.http.dto.ProductDTO;
 import com.project.controlfood.interfaces.http.dto.UpdateProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +31,7 @@ public class ProductController {
     private final FindProducts findProducts;
     private final DeleteProduct deleteProduct;
     private final UpdateProduct updateProduct;
+    private final ProductRepositoryJPA productRepositoryJPA;
 
     @PostMapping
     public ResponseEntity<Void> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
@@ -76,6 +80,14 @@ public class ProductController {
             ) {
         updateProduct.invoke(id, updateProductDTO.toEntity());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductModel>> findAll() {
+        Sort.Direction direction = Sort.Direction.fromString("asc");
+        Sort sort = Sort.by(new Sort.Order(direction, "name").ignoreCase());
+        List<ProductModel> byAllIgnoreCaseOrderByNameAsc = this.productRepositoryJPA.findByAllIgnoreCaseOrderByNameAsc(sort);
+        return ResponseEntity.ok(byAllIgnoreCaseOrderByNameAsc);
     }
 
 }
